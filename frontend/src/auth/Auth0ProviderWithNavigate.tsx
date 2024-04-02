@@ -11,8 +11,9 @@ const Auth0ProviderWithNavigate = ({ children }: Props) => {
   const domain = import.meta.env.VITE_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
   const redirectUri = import.meta.env.VITE_AUTH0_CALLBACK_URL;
+  const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 
-  if (!domain || !clientId || !redirectUri) {
+  if (!domain || !clientId || !redirectUri || !audience) {
     throw new Error("Unable to initialize auth");
   }
 
@@ -31,6 +32,7 @@ const Auth0ProviderWithNavigate = ({ children }: Props) => {
       clientId={clientId}
       authorizationParams={{
         redirect_uri: redirectUri, //whenever the user signs in on the Auth0 page, Auth0 will try to send the user back to our app and its going to try to send them to the URL that I have defined here i.e redirectUri and if this URL doesnt match the web origins that we have added to our auth0 its going to throw a big error. (Security thing)
+        audience,
       }}
       onRedirectCallback={onRedirectCallback}
     >
