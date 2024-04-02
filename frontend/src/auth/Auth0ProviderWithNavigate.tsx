@@ -1,5 +1,4 @@
-import { useCreateMyUser } from "@/api/MyUserApi";
-import { AppState, Auth0Provider, User } from "@auth0/auth0-react";
+import { Auth0Provider } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
@@ -20,7 +19,7 @@ const Auth0ProviderWithNavigate = ({ children }: Props) => {
   //appState variable : It is going to contain some stored data that we might need when the user gets redirected back to our app after they login. Eg: We are going to store the current URL that the user was on in App State before we send them to the login page and that way when they get redirected back to us we can grab the url that they were in before from the App State and then we can use it in here to do whatever we want in this function i.e onRedirectCallback
   // user variable : It will store the user details of the logged in user
   //This function is called when the user logs in and it is redirected back to our app
-  const onRedirectCallback = (appState?: AppState, user?: User) => {
+  const onRedirectCallback = () => {
     // console.log("USER", user);
 
     navigate("/auth-callback"); // when the user logs in it will get redirect to AuthCallbackPage Component
