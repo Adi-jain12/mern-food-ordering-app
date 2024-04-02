@@ -1,12 +1,13 @@
 import { useCreateMyUser } from "@/api/MyUserApi";
 import { AppState, Auth0Provider, User } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   children: React.ReactNode;
 };
 
 const Auth0ProviderWithNavigate = ({ children }: Props) => {
-  const { createUser } = useCreateMyUser();
+  const navigate = useNavigate();
 
   const domain = import.meta.env.VITE_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
@@ -18,14 +19,11 @@ const Auth0ProviderWithNavigate = ({ children }: Props) => {
 
   //appState variable : It is going to contain some stored data that we might need when the user gets redirected back to our app after they login. Eg: We are going to store the current URL that the user was on in App State before we send them to the login page and that way when they get redirected back to us we can grab the url that they were in before from the App State and then we can use it in here to do whatever we want in this function i.e onRedirectCallback
   // user variable : It will store the user details of the logged in user
+  //This function is called when the user logs in and it is redirected back to our app
   const onRedirectCallback = (appState?: AppState, user?: User) => {
     // console.log("USER", user);
 
-    //whenever the user signs in it will call this function i.e onRedirectCallback which sends back the user with auth0Id and email which we can use to store in our DB
-    if (user?.sub && user?.email) {
-      //user.sub is auth Id
-      createUser({ auth0Id: user.sub, email: user.email });
-    }
+    navigate("/auth-callback"); // when the user logs in it will get redirect to AuthCallbackPage Component
   };
 
   return (
