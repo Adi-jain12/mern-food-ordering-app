@@ -23,3 +23,27 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error creating user" });
   }
 };
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const { name, addressLine1, city, country } = req.body;
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({ messsage: "User not found" });
+    }
+
+    //reason updating this way is to be specific to update specific fields only and it automatically ignores extra data
+    user.name = name;
+    user.addressLine1 = addressLine1;
+    user.country = country;
+    user.city = city;
+
+    await user.save();
+
+    res.send(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user profile" });
+  }
+};
