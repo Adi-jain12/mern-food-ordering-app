@@ -37,6 +37,10 @@ const UserProfileForm = ({ onSave, isLoading }: Props) => {
     resolver: zodResolver(formSchema), //resolver is basically used for handling validation and stuff. Here making use of and connecting zod formSchema to react hook form as it has validation messages
   });
 
+  useEffect(() => {
+    form.reset(currentUser);
+  }, [currentUser, form]);
+
   return (
     <Form {...form}>
       <form
