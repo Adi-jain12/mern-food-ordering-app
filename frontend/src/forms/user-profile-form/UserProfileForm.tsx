@@ -1,6 +1,5 @@
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,16 +10,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import LoadingButton from "@/components/LoadingButton";
-import { Button } from "@/components/ui/button";
-import { User } from "@/types";
-import { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+import { z } from "zod"; //Framework for advance validation on form
 
 // inside object we can specify all the properties the form has
 const formSchema = z.object({
   email: z.string().optional(),
   name: z.string().min(1, "Name is required"),
-  addressLine1: z.string().min(1, "AddressLine1 is required"),
+  addressLine1: z.string().min(1, "Address is required"),
   city: z.string().min(1, "City is required"),
   country: z.string().min(1, "Country is required"),
 });
@@ -37,18 +36,14 @@ const UserProfileForm = ({ onSave, isLoading }: Props) => {
     resolver: zodResolver(formSchema), //resolver is basically used for handling validation and stuff. Here making use of and connecting zod formSchema to react hook form as it has validation messages
   });
 
-  useEffect(() => {
-    form.reset(currentUser);
-  }, [currentUser, form]);
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSave)}
-        className="space-y-4 bg-gray-50 rounded-lg md:p-10"
+        className="space-y-4 bg-gray-200 rounded-lg md:p-10"
       >
         <div>
-          <h2 className="text-2xl font-bold">{title}</h2>
+          <h2 className="text-2xl font-bold">User Profile Form</h2>
           <FormDescription>
             View and change your profile information here
           </FormDescription>
@@ -125,7 +120,7 @@ const UserProfileForm = ({ onSave, isLoading }: Props) => {
           <LoadingButton />
         ) : (
           <Button type="submit" className="bg-orange-500">
-            {buttonText}
+            Submit
           </Button>
         )}
       </form>
