@@ -47,3 +47,17 @@ export const updateProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error updating user profile" });
   }
 };
+
+export const getProfileDetails = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findOne({ _id: req.userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "Unable not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    return res.status(500).json({ message: "Somthin went wrong" });
+  }
+};
