@@ -11,10 +11,20 @@ const UserProfilePage = () => {
   const { userProfile, isLoading: isGetLoading } = useFetchUserProfileDetails();
 
   if (isGetLoading) {
-    <span>Loading...</span>;
+    return <span>Loading...</span>;
   }
 
-  return <UserProfileForm onSave={updateProfile} isLoading={isUpdateLoading} />;
+  if (!userProfile) {
+    return <span>Unable to load user profile</span>;
+  }
+
+  return (
+    <UserProfileForm
+      currentUser={userProfile}
+      onSave={updateProfile}
+      isLoading={isUpdateLoading}
+    />
+  );
 };
 
 export default UserProfilePage;

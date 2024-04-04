@@ -10,7 +10,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { User } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { z } from "zod"; //Framework for advance validation on form
@@ -30,11 +32,17 @@ type UserFormData = z.infer<typeof formSchema>;
 type Props = {
   onSave: (userProfileData: UserFormData) => void;
   isLoading: boolean;
+  currentUser: User;
 };
-const UserProfileForm = ({ onSave, isLoading }: Props) => {
+const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema), //resolver is basically used for handling validation and stuff. Here making use of and connecting zod formSchema to react hook form as it has validation messages
+    defaultValues: currentUser,
   });
+
+  useEffect(() => {
+    form.reset(currentUser); // if the component re-renders and if the current user changes then it is going to call reset func on the form which causes the form to re-render based on the new data (i.e currentUser) that we pass to the reset func
+  }, [currentUser, form]);
 
   return (
     <Form {...form}>
