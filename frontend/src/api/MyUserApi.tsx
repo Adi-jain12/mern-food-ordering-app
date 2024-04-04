@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "react-query";
+import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -72,12 +73,20 @@ export const useUpdateUserProfile = () => {
 
   const {
     mutateAsync: updateProfile,
-    // isError,
     isLoading,
-    // isSuccess,
-    // error,
-    // reset,
+    isSuccess,
+    error,
+    reset,
   } = useMutation(updateUserProfile);
+
+  if (isSuccess) {
+    toast.success("User profile updated!");
+  }
+
+  if (error) {
+    toast.error(error.toString());
+    reset(); //it clears the error state from the request as we dont want the error toast to keep appearing anytime the component re renders
+  }
 
   return { updateProfile, isLoading };
 };
