@@ -1,4 +1,8 @@
+import { Form } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import DetailsSection from "./DetailsSection";
 
 const formSchema = z.object({
   restaurantName: z.string({
@@ -33,13 +37,40 @@ const formSchema = z.object({
       price: z.coerce.number().min(1, "Price is required"),
     })
   ),
+
+  imageFile: z.instanceof(File, { message: "Image is required" }), // checking if we uploading an image file
 });
+
+type restaurantFormData = z.infer<typeof formSchema>;
 
 type Props = {
   onSave: (restaurantFormData: FormData) => void;
   isLoading: boolean;
 };
 
-const ManageRestaurantForm = ({ onSave, isLoading }: Props) => {};
+const ManageRestaurantForm = ({ onSave, isLoading }: Props) => {
+  const form = useForm<restaurantFormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      cuisines: [],
+      menuItems: [{ name: "", price: 0 }],
+    },
+  });
+
+  const onSubmit = (formDataJson: restaurantFormData) => {
+    //convert formDataJson to a new FormData Object
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 bg-orange-50 p-10 rounded-lg"
+      >
+        <DetailsSection />
+      </form>
+    </Form>
+  );
+};
 
 export default ManageRestaurantForm;

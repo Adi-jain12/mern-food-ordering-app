@@ -45,6 +45,7 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
   }, [currentUser, form]);
 
   return (
+    //spreading all the form functions and methods and objects and all things which we get from the useForm hook onto the shad-cn Form so that we can link them together
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSave)}
