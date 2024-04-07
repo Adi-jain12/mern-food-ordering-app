@@ -1,11 +1,6 @@
 import mongoose from "mongoose";
 
-const menuItemSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    default: () => new mongoose.Types.ObjectId(),
-  },
+const menuItemsSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
 });
@@ -18,7 +13,7 @@ const restaurantSchema = new mongoose.Schema({
   deliveryPrice: { type: Number, required: true },
   estimatedDeliveryTime: { type: Number, required: true },
   cuisines: [{ type: String, required: true }],
-  menuItems: [menuItemSchema],
+  menuItems: [menuItemsSchema],
   imageUrl: { type: String, required: true },
   lastUpdated: { type: Date, required: true },
 });
