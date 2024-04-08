@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -50,6 +51,14 @@ const menuItemInput = ({ index, removeMenuItem }: Props) => {
           </FormItem>
         )}
       />
+
+      <Button
+        type="submit"
+        onClick={removeMenuItem}
+        className="bg-red-500 max-h-fit"
+      >
+        Remove
+      </Button>
     </div>
   );
 };
