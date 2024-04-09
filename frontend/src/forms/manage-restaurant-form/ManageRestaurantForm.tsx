@@ -10,6 +10,7 @@ import ImageSection from "./ImageSection";
 import { Button } from "@/components/ui/button";
 import LoadingButton from "@/components/LoadingButton";
 import { Restaurant } from "@/types";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   restaurantName: z.string({
@@ -65,6 +66,14 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
     },
   });
 
+  useEffect(() => {
+    if (!restaurant) {
+      return;
+    }
+
+    form.reset(restaurant);
+  }, [form, restaurant]);
+
   const onSubmit = (formDataJson: RestaurantFormData) => {
     //convert formDataJson to a new FormData Object
 
@@ -74,10 +83,7 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
     formData.append("city", formDataJson.city);
     formData.append("country", formDataJson.country);
 
-    formData.append(
-      "deliveryPrice",
-      (formDataJson.deliveryPrice * 100).toString()
-    );
+    formData.append("deliveryPrice", formDataJson.deliveryPrice.toString());
     formData.append(
       "estimatedDeliveryTime",
       formDataJson.estimatedDeliveryTime.toString()
@@ -88,10 +94,7 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
 
     formDataJson.menuItems.forEach((menuItem, index) => {
       formData.append(`menuItems[${index}][name]`, menuItem.name);
-      formData.append(
-        `menuItems[${index}][price]`,
-        (menuItem.price * 100).toString()
-      );
+      formData.append(`menuItems[${index}][price]`, menuItem.price.toString());
     });
 
     formData.append("imageFile", formDataJson.imageFile);
