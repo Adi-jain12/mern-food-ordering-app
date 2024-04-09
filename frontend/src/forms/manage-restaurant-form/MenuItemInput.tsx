@@ -14,7 +14,7 @@ type Props = {
   removeMenuItem: () => void;
 };
 
-const menuItemInput = ({ index, removeMenuItem }: Props) => {
+const MenuItemInput = ({ index, removeMenuItem }: Props) => {
   const { control } = useFormContext();
 
   return (
@@ -53,7 +53,7 @@ const menuItemInput = ({ index, removeMenuItem }: Props) => {
       />
 
       <Button
-        type="submit"
+        type="button"
         onClick={removeMenuItem}
         className="bg-red-500 max-h-fit"
       >
@@ -63,4 +63,4 @@ const menuItemInput = ({ index, removeMenuItem }: Props) => {
   );
 };
 
-export default menuItemInput;
+export default MenuItemInput;

@@ -35,7 +35,7 @@ const MenuSection = () => {
           </FormItem>
         )}
       />
-      <Button type="submit" onClick={() => append({ name: "", price: "" })}>
+      <Button type="button" onClick={() => append({ name: "", price: "" })}>
         Add Menu Item
       </Button>
     </div>
