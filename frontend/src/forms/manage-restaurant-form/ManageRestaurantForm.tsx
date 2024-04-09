@@ -9,6 +9,7 @@ import MenuSection from "./MenuSection";
 import ImageSection from "./ImageSection";
 import { Button } from "@/components/ui/button";
 import LoadingButton from "@/components/LoadingButton";
+import { Restaurant } from "@/types";
 
 const formSchema = z.object({
   restaurantName: z.string({
@@ -50,11 +51,12 @@ const formSchema = z.object({
 type RestaurantFormData = z.infer<typeof formSchema>;
 
 type Props = {
+  restaurant?: Restaurant; //optional parameter as new user will not have the restaurant submitted so we can't fetch from DB
   onSave: (restaurantFormData: FormData) => void;
   isLoading: boolean;
 };
 
-const ManageRestaurantForm = ({ onSave, isLoading }: Props) => {
+const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
   const form = useForm<RestaurantFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
