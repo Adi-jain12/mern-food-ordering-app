@@ -47,10 +47,7 @@ export const validateMyRestaurantRequest = [
     .isEmpty()
     .withMessage("Cuisines array cannot be empty"), // Checking both is array and not empty array
   body("menuItems").isArray().withMessage("Menu Items must be an array"),
-  body("menuItems.*.name")
-    .isString()
-    .notEmpty()
-    .withMessage("Menu Item name is required"), // menuItems.*.name means for each menuItem object check for name property
+  body("menuItems.*.name").notEmpty().withMessage("Menu Item name is required"), // menuItems.*.name means for each menuItem object check for name property
   body("menuItems.*.price")
     .isFloat({ min: 0 })
     .withMessage("Menu item price is required and must be a positive number"),
