@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 
 // this middleware will check if any errors from validateMyUserRequest array is there and if it is there send the errors in array to client
 const handleValidationErrors = async (
@@ -51,6 +51,16 @@ export const validateMyRestaurantRequest = [
   body("menuItems.*.price")
     .isFloat({ min: 0 })
     .withMessage("Menu item price is required and must be a positive number"),
+
+  handleValidationErrors,
+];
+
+export const validateSearchRequest = [
+  param("city")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("City parameter must be a valid string"),
 
   handleValidationErrors,
 ];
