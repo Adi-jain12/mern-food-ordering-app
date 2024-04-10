@@ -12,42 +12,48 @@ import LoadingButton from "@/components/LoadingButton";
 import { Restaurant } from "@/types";
 import { useEffect } from "react";
 
-const formSchema = z.object({
-  restaurantName: z.string({
-    required_error: "Restaurant Name is required",
-  }),
+const formSchema = z
+  .object({
+    restaurantName: z.string({
+      required_error: "Restaurant Name is required",
+    }),
 
-  city: z.string({
-    required_error: "City is required",
-  }),
-  country: z.string({
-    required_error: "Country is required",
-  }),
-  deliveryPrice: z.coerce.number({
-    //when inputting value in form they are in html form elements, so the input value is always a string so coerce func is to convert string to number
-    required_error: "Delivery Price is required",
-    invalid_type_error: "Must be a valid number",
-  }),
-  estimatedDeliveryTime: z.coerce.number({
-    required_error: "Estimated Delivery Time is required",
-    invalid_type_error: "Must be a valid number",
-  }),
+    city: z.string({
+      required_error: "City is required",
+    }),
+    country: z.string({
+      required_error: "Country is required",
+    }),
+    deliveryPrice: z.coerce.number({
+      //when inputting value in form they are in html form elements, so the input value is always a string so coerce func is to convert string to number
+      required_error: "Delivery Price is required",
+      invalid_type_error: "Must be a valid number",
+    }),
+    estimatedDeliveryTime: z.coerce.number({
+      required_error: "Estimated Delivery Time is required",
+      invalid_type_error: "Must be a valid number",
+    }),
 
-  //because cuisines contains an array of strings
-  cuisines: z.array(z.string()).nonempty({
-    message: "Please select at least one item",
-  }),
+    //because cuisines contains an array of strings
+    cuisines: z.array(z.string()).nonempty({
+      message: "Please select at least one item",
+    }),
 
-  //because menuItems is an array of objects with name and price field in it
-  menuItems: z.array(
-    z.object({
-      name: z.string().min(1, "Name is required"),
-      price: z.coerce.number().min(1, "Price is required"),
-    })
-  ),
+    //because menuItems is an array of objects with name and price field in it
+    menuItems: z.array(
+      z.object({
+        name: z.string().min(1, "Name is required"),
+        price: z.coerce.number().min(1, "Price is required"),
+      })
+    ),
 
-  imageFile: z.instanceof(File, { message: "Image is required" }), // checking if we uploading an image file
-});
+    imageUrl: z.string().optional(),
+    imageFile: z.instanceof(File, { message: "Image is required" }).optional(), // checking if we uploading an image file
+  })
+  .refine((data) => data.imageFile || data.imageUrl, {
+    message: "Either image URL or image File must be provided", //error message to be displayed if neither of the following i.e data.imageUrl or imageFile is not uploaded
+    path: ["imageFile"],
+  });
 
 type RestaurantFormData = z.infer<typeof formSchema>;
 
@@ -97,7 +103,10 @@ const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
       formData.append(`menuItems[${index}][price]`, menuItem.price.toString());
     });
 
-    formData.append("imageFile", formDataJson.imageFile);
+    //checking if user uploaded image or not because uploading imageFile is optional in zod config above and if not uploaded the formDataJson.imageFile will be undefined for TS so to overcome that issue we are using if case
+    if (formDataJson.imageFile) {
+      formData.append("imageFile", formDataJson.imageFile);
+    }
 
     onSave(formData);
   };
