@@ -1,21 +1,32 @@
 import { useRestaurantSearch } from "@/api/RestaurantApi";
+import SearchResultCard from "@/components/SearchPage/SearchResultCard";
+import SearchResultInfo from "@/components/SearchPage/SearchResultInfo";
 import { useParams } from "react-router-dom";
 
 const SearchPage = () => {
   const { city } = useParams();
-  const { restaurants } = useRestaurantSearch(city);
+  const { restaurants, isLoading } = useRestaurantSearch(city);
+
+  if (isLoading) {
+    <span>Loading...</span>;
+  }
+
+  //Handling the edge cases as on first time load this will return
+  if (!restaurants?.data || !city) {
+    return <span>No results found</span>;
+  }
 
   return (
-    <span>
-      User searched for {city}
-      <span>
-        {restaurants?.data.map((restaurant) => (
-          <span>
-            found - {restaurant.restaurantName}, {restaurant.city}
-          </span>
+    <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
+      <div id="cuisines-list">Cuisines List 😋</div>
+
+      <div id="main-content" className="flex flex-col gap-5">
+        <SearchResultInfo total={restaurants.pagination.total} city={city} />
+        {restaurants.data.map((restaurant) => (
+          <SearchResultCard restaurant={restaurant} />
         ))}
-      </span>
-    </span>
+      </div>
+    </div>
   );
 };
 
