@@ -60,7 +60,15 @@ export const validateSearchRequest = [
     .isString()
     .trim()
     .notEmpty()
-    .withMessage("City parameter must be a valid string"),
+    .withMessage("CityId parameter must be a valid string"),
 
   handleValidationErrors,
+];
+
+export const validateRestaurantRequest = [
+  param("restaurantId")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("RestaurantId parameter must be a valid string"),
 ];
