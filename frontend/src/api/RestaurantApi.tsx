@@ -12,9 +12,10 @@ export const useRestaurantSearch = (
     // this is to add some key value pairs which will converted to query parameters so that we can add it to the fetch url
     const params = new URLSearchParams();
     params.set("searchQuery", searchState.searchQuery);
+    params.set("page", searchState.page.toString());
 
     const response = await fetch(
-      `${API_BASE_URL}/api/restaurant/search/${city}?${params.toString()}`
+      `${API_BASE_URL}/api/restaurant/search/${city}?${params.toString()}}`
     );
 
     if (!response.ok) {

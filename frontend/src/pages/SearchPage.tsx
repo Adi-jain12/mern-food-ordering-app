@@ -1,4 +1,5 @@
 import { useRestaurantSearch } from "@/api/RestaurantApi";
+import PaginationSelector from "@/components/PaginationSelector";
 import SearchBar, { SearchForm } from "@/components/SearchBar";
 import SearchResultCard from "@/components/SearchPage/SearchResultCard";
 import SearchResultInfo from "@/components/SearchPage/SearchResultInfo";
@@ -7,12 +8,14 @@ import { useParams } from "react-router-dom";
 
 export type SearchState = {
   searchQuery: string;
+  page: number;
 };
 
 const SearchPage = () => {
   const { city } = useParams();
   const [searchState, setSearchState] = useState<SearchState>({
     searchQuery: "",
+    page: 1,
   });
   const { restaurants, isLoading } = useRestaurantSearch(searchState, city);
 
@@ -20,6 +23,7 @@ const SearchPage = () => {
     setSearchState((prevState) => ({
       ...prevState, //this is because we dont want to update the other values like cuisines and sort filters
       searchQuery: searchFormData.searchQuery,
+      page: 1, // this is because if user searches on page 4 so it should show the results from page 1
     }));
   };
 
@@ -27,6 +31,14 @@ const SearchPage = () => {
     setSearchState((prevState) => ({
       ...prevState,
       searchQuery: "",
+      page: 1,
+    }));
+  };
+
+  const handlePageChange = (page: number) => {
+    setSearchState((prevState) => ({
+      ...prevState,
+      page: page,
     }));
   };
 
@@ -54,6 +66,12 @@ const SearchPage = () => {
         {restaurants.data.map((restaurant) => (
           <SearchResultCard restaurant={restaurant} />
         ))}
+
+        <PaginationSelector
+          page={restaurants.pagination.page}
+          pages={restaurants.pagination.pages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );
