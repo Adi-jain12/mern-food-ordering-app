@@ -3,10 +3,9 @@ import MenuItem from "@/components/DetailsPage/MenuItem";
 import OrderSummary from "@/components/DetailsPage/OrderSummary";
 import RestaurantInfo from "@/components/DetailsPage/RestaurantInfo";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Card } from "@/components/ui/card";
+import { Card, CardFooter } from "@/components/ui/card";
 import { MenuItem as MenuItemType } from "@/types";
 import { useState } from "react";
-
 import { useParams } from "react-router-dom";
 
 export type CartItem = {
@@ -101,6 +100,10 @@ const DetailsPage = () => {
               cartItems={cartItems}
               removeCartItem={removeFromCart}
             />
+
+            <CardFooter>
+              <CheckoutButton />
+            </CardFooter>
           </Card>
         </div>
       </div>
