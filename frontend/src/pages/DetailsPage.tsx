@@ -1,4 +1,5 @@
 import { useGetRestaurantDetails } from "@/api/RestaurantApi";
+import CheckoutButton from "@/components/DetailsPage/CheckoutButton";
 import MenuItem from "@/components/DetailsPage/MenuItem";
 import OrderSummary from "@/components/DetailsPage/OrderSummary";
 import RestaurantInfo from "@/components/DetailsPage/RestaurantInfo";
@@ -21,7 +22,11 @@ const DetailsPage = () => {
   const { restaurantDetails, isLoading } =
     useGetRestaurantDetails(restaurantId);
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    // this will check if cart items are stored in session storage and will set the initial state on first load of page by getting the cart item with key for particular restaurant selected.
+    const storedCartItems = sessionStorage.getItem(`cartItems-${restaurantId}`);
+    return storedCartItems ? JSON.parse(storedCartItems) : [];
+  });
 
   const addToCart = (menuItem: MenuItemType) => {
     setCartItems((prevCartItems) => {
@@ -54,6 +59,12 @@ const DetailsPage = () => {
         ];
       }
 
+      // storing cart items in session against key so that we dont loose the items and can retrieve easily when we want
+      sessionStorage.setItem(
+        `cartItems-${restaurantId}`,
+        JSON.stringify(updatedCartItems)
+      );
+
       return updatedCartItems;
     });
   };
@@ -62,6 +73,11 @@ const DetailsPage = () => {
     setCartItems((prevCartItems) => {
       const removeCartItem = prevCartItems.filter(
         (cartItem) => cartItem._id !== menuItemId
+      );
+
+      sessionStorage.setItem(
+        `cartItems-${restaurantId}`,
+        JSON.stringify(removeCartItem)
       );
 
       return removeCartItem;

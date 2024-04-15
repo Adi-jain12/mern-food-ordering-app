@@ -1,29 +1,21 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useLocation } from "react-router-dom";
-import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Button } from "../ui/button";
+import LoadingButton from "../LoadingButton";
 
-type Props = {
-  onCheckout: (userFormData: UserFormData) => void;
-  disabled: boolean;
-  isLoading: boolean;
-};
-
-const CheckoutButton = ({ onCheckout, disabled, isLoading }: Props) => {
+const CheckoutButton = () => {
   const {
     isAuthenticated,
     isLoading: isAuthLoading,
     loginWithRedirect,
   } = useAuth0();
 
-  const { pathname } = useLocation();
-
-  const { currentUser, isLoading: isGetUserLoading } = useGetMyUser();
+  const { pathname } = useLocation(); // for redirecting back to restaurant details page once the user logs in with Auth0 page
 
   const onLogin = async () => {
     await loginWithRedirect({
       appState: {
-        returnTo: pathname,
+        returnTo: pathname, //used to store the pathname and return to it once the login process completes
       },
     });
   };
@@ -36,28 +28,9 @@ const CheckoutButton = ({ onCheckout, disabled, isLoading }: Props) => {
     );
   }
 
-  if (isAuthLoading || !currentUser || isLoading) {
-    return <span>Loading...</span>;
+  if (isAuthLoading) {
+    return <LoadingButton />;
   }
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button disabled={disabled} className="bg-orange-500 flex-1">
-          Go to checkout
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-[425px] md:min-w-[700px] bg-gray-50">
-        {/* <UserProfileForm
-          currentUser={currentUser}
-          onSave={onCheckout}
-          isLoading={isGetUserLoading}
-          title="Confirm Deliery Details"
-          buttonText="Continue to payment"
-        /> */}
-      </DialogContent>
-    </Dialog>
-  );
 };
 
 export default CheckoutButton;
