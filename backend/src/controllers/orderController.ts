@@ -40,6 +40,22 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       checkoutSessionRequest,
       restaurant.menuItems
     );
+
+    // this func is used to create session when user enters the card details and all
+    const session = await createSession(
+      lineItems,
+      "TEST_ORDER_ID",
+      restaurant.deliveryPrice,
+      restaurant._id.toString()
+    );
+
+    // Here, session.url is the url of hosted page on stripe
+    if (!session.url) {
+      return res.status(500).json({ message: "Error creating stripe session" });
+    }
+
+    // return session url to the frontend
+    res.json({ url: session.url });
   } catch (error: any) {
     res.status(500).json({ message: error.raw.message }); // error.raw show descriptive error coming from stripe
   }
@@ -59,7 +75,7 @@ const createLineItems = (
     );
 
     if (!menuItem) {
-      throw new Error(`Menu item not found: ${cartItem.menuItemId}`);
+      throw new Error(`Menu item not found : ${cartItem.menuItemId}`);
     }
 
     const line_item: Stripe.Checkout.SessionCreateParams.LineItem = {
@@ -77,4 +93,40 @@ const createLineItems = (
   });
 
   return lineItems;
+};
+
+const createSession = async (
+  lineItems: Stripe.Checkout.SessionCreateParams.LineItem[],
+  orderId: string,
+  deliveryPrice: number,
+  restaurantId: string
+) => {
+  // this is to create session with stripe with the data entered behind the scene
+  const sessionData = await STRIPE.checkout.sessions.create({
+    line_items: lineItems,
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          display_name: "Delivery",
+          type: "fixed_amount",
+          fixed_amount: {
+            amount: deliveryPrice,
+            currency: "inr",
+          },
+        },
+      },
+    ],
+    mode: "payment",
+
+    //metadata is used to store additional data for every payment so that it can be used
+    metadata: {
+      orderId,
+      restaurantId,
+    },
+
+    success_url: `${FRONTEND_URL}/order-status?success=true`, // if success after adding payment details it will be redirected to order status page
+    cancel_url: `${FRONTEND_URL}/detail/${restaurantId}?cancelled=true`, // if user cancelled the payment it will be redirected to restaurant details page so that they can review the cart items again
+  });
+
+  return sessionData;
 };
