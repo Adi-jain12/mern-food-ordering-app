@@ -46,6 +46,35 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 };
 
 const createLineItems = (
-  createCheckoutSession: CheckoutSessionRequest,
+  checkoutSessionRequest: CheckoutSessionRequest,
   menuItems: MenuItemType[]
-) => {};
+) => {
+  // 1. foreach cartItem, get the menuItem object from the restaurant (to get the price)
+  // 2. foreach cartItem, convert it to a stripe line item
+  // 3. return line item array
+
+  const lineItems = checkoutSessionRequest.cartItems.map((cartItem) => {
+    const menuItem = menuItems.find(
+      (item) => item._id.toString() === cartItem.menuItemId.toString()
+    );
+
+    if (!menuItem) {
+      throw new Error(`Menu item not found: ${cartItem.menuItemId}`);
+    }
+
+    const line_item: Stripe.Checkout.SessionCreateParams.LineItem = {
+      price_data: {
+        currency: "inr",
+        unit_amount: menuItem.price,
+        product_data: {
+          name: menuItem.name,
+        },
+      },
+      quantity: parseInt(cartItem.quantity),
+    };
+
+    return line_item;
+  });
+
+  return lineItems;
+};
