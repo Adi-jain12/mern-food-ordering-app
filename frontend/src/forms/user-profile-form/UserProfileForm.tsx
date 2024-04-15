@@ -27,7 +27,7 @@ const formSchema = z.object({
 });
 
 // zod will automatically detect the properties and the type and assign it to the type UserFormData
-type UserFormData = z.infer<typeof formSchema>;
+export type UserFormData = z.infer<typeof formSchema>;
 
 type Props = {
   onSave: (userProfileData: UserFormData) => void;

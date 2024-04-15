@@ -5,6 +5,7 @@ import OrderSummary from "@/components/DetailsPage/OrderSummary";
 import RestaurantInfo from "@/components/DetailsPage/RestaurantInfo";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardFooter } from "@/components/ui/card";
+import { UserFormData } from "@/forms/user-profile-form/UserProfileForm";
 import { MenuItem as MenuItemType } from "@/types";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -84,6 +85,10 @@ const DetailsPage = () => {
     });
   };
 
+  const onCheckout = (userFormData: UserFormData) => {
+    console.log("userFormData", userFormData);
+  };
+
   if (isLoading || !restaurantDetails) {
     return <span>Loading...</span>;
   }
@@ -118,7 +123,10 @@ const DetailsPage = () => {
             />
 
             <CardFooter>
-              <CheckoutButton />
+              <CheckoutButton
+                onCheckout={onCheckout}
+                disabled={cartItems.length === 0}
+              />
             </CardFooter>
           </Card>
         </div>
