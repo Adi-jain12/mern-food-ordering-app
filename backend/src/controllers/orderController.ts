@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import Stripe from "stripe";
 import Restaurant, { MenuItemType } from "../models/restaurant";
+import Order from "../models/order";
 
 const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string); // makes a connection with stripe
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
@@ -35,6 +36,15 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
       throw new Error("Restaurant not found");
     }
 
+    const newOrder = new Order({
+      restaurant: restaurant,
+      user: req.userId,
+      status: "placed",
+      deliveryDetails: checkoutSessionRequest.deliveryDetails,
+      cartItems: checkoutSessionRequest.cartItems,
+      createdAt: new Date(),
+    });
+
     //creating this function with passing the whole checkoutsessionRequest and restaurant.menuItems for fetching price from backend because stripe expects some line data to set
     const lineItems = createLineItems(
       checkoutSessionRequest,
@@ -44,7 +54,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
     // this func is used to create session when user enters the card details and all
     const session = await createSession(
       lineItems,
-      "TEST_ORDER_ID",
+      newOrder._id.toString(),
       restaurant.deliveryPrice,
       restaurant._id.toString()
     );
@@ -53,6 +63,9 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
     if (!session.url) {
       return res.status(500).json({ message: "Error creating stripe session" });
     }
+
+    //saving the order in DB only if the above stripe payment logic successfully completes
+    await newOrder.save();
 
     // return session url to the frontend
     res.json({ url: session.url });
