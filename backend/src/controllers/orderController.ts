@@ -128,5 +128,7 @@ const createSession = async (
     cancel_url: `${FRONTEND_URL}/detail/${restaurantId}?cancelled=true`, // if user cancelled the payment it will be redirected to restaurant details page so that they can review the cart items again
   });
 
+  // console.log(sessionData);
+
   return sessionData;
 };
