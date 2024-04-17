@@ -6,6 +6,7 @@ import Order from "../models/order";
 
 const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string); // makes a connection with stripe
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
+const STRIPE_ENDPOINT_SECRET = process.env.STRIPE_WEBHOOK_SECRET as string;
 
 type CheckoutSessionRequest = {
   cartItems: {
@@ -147,8 +148,34 @@ const createSession = async (
 };
 
 export const stripeWebhookHandler = async (req: Request, res: Response) => {
-  console.log("RECEIVED EVENT");
-  console.log("=============");
-  console.log("event: ", req.body);
-  res.send();
+  let event;
+
+  try {
+    const sig = req.headers["stripe-signature"];
+
+    // this logic is going to work if any event is coming from stripe
+    //here stripe is goint to verify that req.body is coming from stripe by using the STRIPE_ENDPOINT_SECRET and if it has then it will contruct the event with contructEvent func and give us the result in event object
+    event = STRIPE.webhooks.constructEvent(
+      req.body,
+      sig as string,
+      STRIPE_ENDPOINT_SECRET
+    );
+  } catch (error: any) {
+    return res.status(400).send(`Webhook error : ${error.message}`);
+  }
+
+  if (event.type === "checkout.session.completed") {
+    const order = await Order.findById(event.data.object.metadata?.orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.totalAmount = event.data.object.amount_total;
+    order.status = "paid";
+
+    await order.save();
+  }
+
+  res.status(200).send();
 };
