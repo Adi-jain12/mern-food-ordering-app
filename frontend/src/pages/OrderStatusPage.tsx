@@ -1,4 +1,5 @@
 import { useMyOrderDetails } from "@/api/OrderAPI";
+import OrderStatusHeader from "@/components/OrderStatusPage/OrderStatusHeader";
 
 const OrderStatusPage = () => {
   const { orderDetails, isLoading } = useMyOrderDetails();
@@ -15,7 +16,7 @@ const OrderStatusPage = () => {
     <div className="space-y-10">
       {orderDetails.map((order) => (
         <div className="space-y-10 bg-gray-50 p-10 rounded-lg">
-          <OrderStatusHeader order={orderDetails} />
+          <OrderStatusHeader order={order} />
         </div>
       ))}
     </div>
