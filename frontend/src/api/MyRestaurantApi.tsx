@@ -129,7 +129,7 @@ export const useMyRestarantOrders = () => {
   const myRestaurantOrders = async (): Promise<Order[]> => {
     const accessToken = await getAccessTokenSilently();
 
-    const response = await fetch(`${API_BASE_URL}/api/order/orders`, {
+    const response = await fetch(`${API_BASE_URL}/api/my/restaurant/orders`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",

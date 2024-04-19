@@ -21,8 +21,9 @@ const OrderStatusHeader = ({ order }: Props) => {
     // minutes = 04
     // 12:04
     const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const paddedHours = hours < 10 ? `0${hours}` : hours;
 
-    return `${hours}:${paddedMinutes}`; // 12:04
+    return `${paddedHours}:${paddedMinutes}`; // 12:04
   };
 
   const getOrderStatusInfo = () => {
@@ -32,10 +33,23 @@ const OrderStatusHeader = ({ order }: Props) => {
     );
   };
 
+  const color = getOrderStatusInfo
+    ? getOrderStatusInfo().colorIndication
+    : "slate";
+
+  const color2 = `bg-${color}-200 border-${color}-600`;
+
   return (
     <>
-      <h1 className="text-4xl font-bold tracking-tight flex flex-col gap-5 md:flex-row md:justify-between">
-        <span>Order Status : {getOrderStatusInfo().label}</span>
+      <h1 className="text-2xl font-bold tracking-tight flex flex-col gap-5 md:flex-row md:justify-between">
+        <span className="flex items-center">
+          Order Status :
+          <span
+            className={`ml-4 p-1 text-sm tracking-normal font-medium ${color2} border-2 rounded-lg`}
+          >
+            {getOrderStatusInfo().label}
+          </span>
+        </span>
         <span>Expected by : {getExpectedDelivery()}</span>
       </h1>
 
