@@ -155,7 +155,7 @@ type UpdateOrderStatusType = {
   status: string;
 };
 
-export const useUpdateOrderStatus = (id, status) => {
+export const useUpdateOrderStatus = () => {
   const { getAccessTokenSilently } = useAuth0();
 
   const updateOrderStatus = async (
@@ -164,7 +164,7 @@ export const useUpdateOrderStatus = (id, status) => {
     const accessToken = await getAccessTokenSilently();
 
     const response = await fetch(
-      `${API_BASE_URL}/api/my/restaurant/orders/${id}/status`,
+      `${API_BASE_URL}/api/my/restaurant/order/${updateOrderStatusRequest.orderId}/status`,
       {
         method: "PATCH",
         headers: {
