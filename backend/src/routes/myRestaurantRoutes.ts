@@ -5,6 +5,7 @@ import {
   getMyRestaurant,
   updateMyRestaurant,
   getMyRestaurantOrders,
+  updateOrderStatus,
 } from "../controllers/myRestaurantController";
 import multer from "multer";
 import { validateMyRestaurantRequest } from "../middleware/validation";
@@ -40,5 +41,7 @@ router.put(
   jwtParse,
   updateMyRestaurant
 );
+
+router.patch("/order/:orderId/status", jwtCheck, jwtParse, updateOrderStatus);
 
 export default router;
