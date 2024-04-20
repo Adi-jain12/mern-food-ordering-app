@@ -88,7 +88,10 @@ export const useMyOrderDetails = () => {
 
   const { data: orderDetails, isLoading } = useQuery(
     "myOrderDetails",
-    myOrderDetails
+    myOrderDetails,
+    {
+      refetchInterval: 5000, // react query will perform the request every 5 seconds
+    }
   );
 
   return {
