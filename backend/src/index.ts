@@ -19,13 +19,13 @@ cloudinary.config({
 });
 
 const app = express();
-// app.use(cors());
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-  })
-);
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: process.env.FRONTEND_URL,
+//     credentials: true,
+//   })
+// );
 
 //this endpoint is used to use webhook api and validate data by passing raw data in below api's req using express.raw() because stripe in this endpoint expects data as raw for computing
 app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
