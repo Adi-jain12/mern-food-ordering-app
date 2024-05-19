@@ -10,7 +10,7 @@ const Header = () => {
           to="/"
           className="text-3xl font-bold tracking-tight text-orange-500"
         >
-          Aaharly
+          craveit
         </Link>
 
         <div className="md:hidden">
