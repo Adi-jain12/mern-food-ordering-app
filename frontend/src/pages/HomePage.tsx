@@ -33,7 +33,7 @@ const HomePage = () => {
           </span>
 
           <span>
-            Download the craveit App for faster ordering and personalised
+            Download the forkify App for faster ordering and personalised
             recommendations
           </span>
 
