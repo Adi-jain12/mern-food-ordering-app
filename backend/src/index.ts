@@ -31,6 +31,7 @@ app.use(cors());
 app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //extra sanity check to check if the server has successfully started and we can make requests to the endpoints
 app.get("/health", async (req: Request, res: Response) => {
